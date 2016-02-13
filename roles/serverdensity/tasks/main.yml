@@ -29,14 +29,6 @@
     backup: yes
   notify: restart sd-agent
 
-- name: Setup logrotate
-  template:
-    src: sd-logrotate.j2
-    dest: /etc/logrotate.d/sd-logrotate
-    owner: root
-    group: root
-    mode: 0644
-
 - name: Install additional plugins
   include: plugins.yml
   when: plugins is defined
