@@ -1,5 +1,3 @@
 ---
 - name: restart sd-agent
-  service:
-    name: sd-agent
-    state: restarted
+  service: name=sd-agent state=restarted
