@@ -1,10 +1,10 @@
 ---
-#Sets your server group
+# Sets your server group
 group_name: "ungrouped"
 
-#Optional configuration
-plugin_directory: ""
+# Optional configuration
+plugin_directory: "/usr/local/share/sd-plugins/"
 
-#Ubuntu Default
+# Ubuntu Default
 ansible_lsb:
   id: "ubuntu"
