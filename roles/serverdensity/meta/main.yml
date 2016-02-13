@@ -1,0 +1,30 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: 'Corban R., Jorge Salamero, Server Density'
+  description: 'Install and configure Server Density monitoring agent and plugins'
+  min_ansible_version: 1.7
+  platforms:
+   - name: EL
+     versions:
+      - 5
+      - 6
+      - 7
+   - name: Fedora
+     versions:
+      - 21
+      - 22
+      - 23
+   - name: Debian
+     versions:
+      - wheezy
+      - jessie
+   - name: Ubuntu
+     versions:
+      - precise
+      - trusty
+  galaxy_tags:
+   - system
+   - monitoring
+   - cloud:ec2
