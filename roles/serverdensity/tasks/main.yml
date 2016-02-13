@@ -11,7 +11,7 @@
     state: present
   when: ansible_os_family == "RedHat"
 
-- name: Install v2 Server Density agent
+- name: Install Server Density agent v2
   include: agent.yml
   when: upgrade_v2 is not defined
 
@@ -19,7 +19,7 @@
   include: upgrade.yml
   when: upgrade_v2 is defined
 
-- name: Copy config file
+- name: Configure Server Density agent
   template:
     src: config.template.j2
     dest: /etc/sd-agent/config.cfg
@@ -29,7 +29,7 @@
     backup: yes
   notify: restart sd-agent
 
-- name: Install additional plugins
+- name: Install Server Density plugins
   include: plugins.yml
   when: plugins is defined
 
