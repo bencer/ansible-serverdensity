@@ -5,6 +5,9 @@ group_name: "ungrouped"
 # Optional configuration
 plugin_directory: "/usr/local/share/sd-plugins/"
 
+# Log level
+log_level: "INFO"
+
 # Ubuntu Default
 ansible_lsb:
   id: "ubuntu"
