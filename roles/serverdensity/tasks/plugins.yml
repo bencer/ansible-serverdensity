@@ -28,3 +28,4 @@
     path: "/etc/sd-agent/conf.d/{{ item }}.yaml.example"
     state: absent
   with_items: plugins
+  when: delete_example
