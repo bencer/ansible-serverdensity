@@ -1,3 +1,0 @@
-#See Ansible documentation for more information: http://docs.ansible.com/intro_inventory.html#hosts-and-groups
-[development]
-hostname
