@@ -1,4 +1,7 @@
 ---
+- name: Getting EC2 facts (for EC2 cloud devices support)
+  action: ec2_facts
+
 - name: Add the Server Density repository signing key (Debian/Ubuntu)
   apt_key:
     id: "74371316"
@@ -52,26 +55,61 @@
   notify: restart sd-agent
   when: ansible_os_family == "RedHat"
 
-- name: Check to see if we previously upgraded the Server Density agent from v1 to v2
+- name: Create variable data directory
+  file: path={{ var_dir_path }} state=directory owner=sd-agent group=sd-agent mode=0770
+
+- name: Copy agentKey configuration script
+  copy:
+    src: sd_agent_key.py
+    dest: "{{ var_dir_path }}/sd_agent_key.py"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Check if we previously upgraded the Server Density agent from v1 to v2
   stat:
-    path: /var/log/sd-upgrade-v2-key.log.json
+    path: "{{ var_dir_path }}/sd-upgrade-v2-key.log.json"
   register: upgraded
 
 - name: Register device with the Server Density API
-  shell: curl -v -X POST https://api.serverdensity.io/inventory/devices/?token={{ api_token }} \
-         --data name={{ sd_hostname | default(ansible_hostname) }} \
-         --data group={{ group_name}} > /var/log/sd-agent-v2-install.log.json
+  shell: "{{ var_dir_path }}/sd_agent_key.py \
+         --name={{ sd_hostname | default(ansible_hostname) }} \
+         --group={{ group_name }} > {{ var_dir_path }}/device.json"
+  environment:
+    SD_TOKEN: "{{ api_token }}"
   args:
-    creates: /var/log/sd-agent-v2-install.log.json
-  when: not upgraded.stat.exists
+    creates: "{{ var_dir_path }}/device.json"
+  when: (not upgraded.stat.exists) and (ansible_ec2_instance_id is undefined) and (not existing_device_override)
+
+- name: Get existing device with the Server Density API - EC2
+  shell: "{{ var_dir_path }}/sd_agent_key.py \
+         --name={{ sd_hostname | default(ansible_hostname) }} \
+         --group={{ group_name }} \
+         --ec2_instance_id={{ ansible_ec2_instance_id }} > {{ var_dir_path }}/device.json"
+  environment:
+    SD_TOKEN: "{{ api_token }}"
+  args:
+    creates: "{{ var_dir_path }}/device.json"
+  when: (not upgraded.stat.exists) and (ansible_ec2_instance_id is defined)
+
+- name: Get existing device with the Server Density API - trying to override
+  shell: "{{ var_dir_path }}/sd_agent_key.py \
+         --name={{ sd_hostname | default(ansible_hostname) }} \
+         --group={{ group_name }} \
+         --override > {{ var_dir_path }}/device.json"
+  environment:
+    SD_TOKEN: "{{ api_token }}"
+  args:
+    creates: "{{ var_dir_path }}/device.json"
+  when: (not upgraded.stat.exists) and (ansible_ec2_instance_id is undefined) and existing_device_override
 
 - name: Register JSON
-  command: cat /var/log/sd-agent-v2-install.log.json
+  command: cat "{{ var_dir_path }}/device.json"
   register: result
   when: not upgraded.stat.exists
 
 - name: Register JSON upgraded
-  command: cat /var/log/sd-upgrade-v2-key.log.json
+  command: cat "{{ var_dir_path }}/sd-upgrade-v2-key.log.json"
   register: result_upgraded
   when: upgraded.stat.exists
 
@@ -84,3 +122,14 @@
   set_fact:
     api_result: "{{ result_upgraded.stdout|from_json }}"
   when: upgraded.stat.exists
+
+# when this fails the device has been removed from Server Density
+# delete /var/lib/sd-agent/device.json and re-run Ansible again
+- name: Check agentKey is valid
+  shell: "{{ var_dir_path }}/sd_agent_key.py \
+         --check={{ api_result.agentKey }}"
+  environment:
+    SD_TOKEN: "{{ api_token }}"
+  register: check_result
+  failed_when: "check_result.rc != 0"
+  when: check_agentkey

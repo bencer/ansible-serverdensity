@@ -8,6 +8,15 @@
 # Override device name, defaults to hostname -s
 #sd_hostname:
 
+# Variable data dir path
+var_dir_path: "/var/lib/sd-agent/"
+
+# Override existing devices with the same name (will use the same agentKey)
+existing_device_override: False
+
+# Check agentKey exists after going through the provisioning process
+check_agentkey: True
+
 # Default server group
 group_name: "ungrouped"
 

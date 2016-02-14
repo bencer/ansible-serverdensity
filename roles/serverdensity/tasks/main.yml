@@ -1,15 +1,21 @@
 ---
 - name: Install Server Density dependencies (Debian/Ubuntu)
   apt:
-    name: curl
+    name: "{{ item }}"
     state: present
   when: ansible_os_family == "Debian"
+  with_items:
+    - curl
+    - python3-requests
 
 - name: Install Server Density dependencies (RedHat/CentOS)
   yum:
-    name: curl
+    name: "{{ item }}"
     state: present
   when: ansible_os_family == "RedHat"
+  with_items:
+    - curl
+    - python3-requests
 
 - name: Install Server Density agent v2
   include: agent.yml
