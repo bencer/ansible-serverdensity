@@ -23,11 +23,11 @@
     mode: 0644
   when: ansible_os_family == "RedHat"
 
-- name: Install Server Density repository signing key (RedHat/CentOS)
+- name: Add the Server Density repository signing key (RedHat/CentOS)
   command: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-serverdensity
   when: ansible_os_family == "RedHat"
 
-- name: Add server Density repository (RedHat/CentOS)
+- name: Add Server Density repository (RedHat/CentOS)
   copy:
     src: serverdensity.repo
     dest: /etc/yum.repos.d/serverdensity.repo
