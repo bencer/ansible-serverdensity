@@ -26,7 +26,7 @@
     owner: sd-agent
     group: sd-agent
     mode: 0660
-    backup: yes
+    backup: "{{ backup_configcfg }}"
   notify: restart sd-agent
 
 - name: Install Server Density plugins

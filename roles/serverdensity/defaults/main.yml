@@ -8,6 +8,9 @@ plugin_directory: "/usr/local/share/sd-plugins/"
 # Log level
 log_level: "INFO"
 
+# Backup config.cfg file
+backup_configcfg: yes
+
 # Delete .example configuration files
 delete_example: True
 
