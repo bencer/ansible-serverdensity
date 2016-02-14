@@ -8,10 +8,10 @@
 # Override device name, defaults to hostname -s
 #sd_hostname:
 
-# Sets your server group
+# Default server group
 group_name: "ungrouped"
 
-# Optional configuration
+# 3rd party plugins path
 plugin_directory: "/usr/local/share/sd-plugins/"
 
 # Log level
@@ -23,6 +23,6 @@ backup_configcfg: yes
 # Delete .example configuration files
 delete_example: True
 
-# Ubuntu Default
+# Default release
 ansible_lsb:
   id: "ubuntu"
