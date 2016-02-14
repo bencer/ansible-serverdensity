@@ -35,3 +35,6 @@ delete_example: True
 # Default release
 ansible_lsb:
   id: "ubuntu"
+
+# Configured checks (official plugins)
+sd_checks: {}
