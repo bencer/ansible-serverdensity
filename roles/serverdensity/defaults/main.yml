@@ -1,4 +1,13 @@
 ---
+# Server Density account name
+#sd_account:
+
+# Server Density API token, see https://apidocs.serverdensity.com/#authentication
+#api_token:
+
+# Override device name, defaults to hostname -s
+#sd_hostname:
+
 # Sets your server group
 group_name: "ungrouped"
 
