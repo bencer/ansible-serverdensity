@@ -56,7 +56,12 @@
   when: ansible_os_family == "RedHat"
 
 - name: Create variable data directory
-  file: path={{ var_dir_path }} state=directory owner=sd-agent group=sd-agent mode=0770
+  file:
+    path: {{ var_dir_path }}
+    state: directory
+    owner: sd-agent
+    group: sd-agent
+    mode: 0770
 
 - name: Copy agentKey configuration script
   copy:
